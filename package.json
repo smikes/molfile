@@ -24,8 +24,10 @@
   "homepage": "https://github.com/smikes/molfile",
   "devDependencies": {
     "istanbul": "^0.2.7",
+    "jslint": "^0.3.2",
     "mocha": "^1.18.2",
-    "should": "^3.3.0"
+    "should": "^3.3.0",
+    "yuidocjs": "^0.3.49"
   },
   "dependencies": {
     "unzip": "^0.1.9"
