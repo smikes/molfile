@@ -1,0 +1,33 @@
+{
+  "name": "molfile",
+  "version": "0.0.0",
+  "description": "Stream reader for MDL, SDF, molfile chemistry data formats",
+  "main": "index.js",
+  "scripts": {
+    "test": "./node_modules/bin/mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/smikes/molfile.git"
+  },
+  "keywords": [
+    "sdf",
+    "mdl",
+    "chemistry",
+    "molecule"
+  ],
+  "author": "Sam Mikes",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/smikes/molfile/issues"
+  },
+  "homepage": "https://github.com/smikes/molfile",
+  "devDependencies": {
+    "istanbul": "^0.2.7",
+    "mocha": "^1.18.2",
+    "should": "^3.3.0"
+  },
+  "dependencies": {
+    "unzip": "^0.1.9"
+  }
+}
