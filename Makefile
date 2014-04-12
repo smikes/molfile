@@ -6,7 +6,7 @@ default: build test
 install:
 	(unset tmp temp; npm i)
 
-prepublish: lint doc test no-dos-endings check-coverage
+prepublish: lint doc test no-dos-endings check-coverage jstest-slow
 
 lint: jslint doclint
 
@@ -20,6 +20,9 @@ test: jstest
 
 jstest:
 	./node_modules/.bin/mocha
+
+jstest-slow:
+	./node_modules/.bin/mocha -s 2000 test/slow
 
 no-dos-endings:
 	file $(JSSOURCES) | grep -v CRLF > /dev/null
