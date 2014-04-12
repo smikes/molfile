@@ -26,7 +26,9 @@
     "istanbul": "^0.2.7",
     "jslint": "^0.3.2",
     "mocha": "^1.18.2",
+    "resumer": "0.0.0",
     "should": "^3.3.0",
+    "sinon": "^1.9.1",
     "yuidocjs": "^0.3.49"
   },
   "dependencies": {
