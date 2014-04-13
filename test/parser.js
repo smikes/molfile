@@ -1,5 +1,12 @@
+/*globals: it, describe*/
 require('should');
-var parser = require('../lib/parser');
+var fs = require('fs'),
+    sinon = require('sinon'),
+    parser = require('../lib/parser');
+
+function dateMatch(d1, d2) {
+    return Math.abs(d1.getTime() - d2.getTime()) < 1000*60*60*24;
+}
 
 describe('parser', function() {
     describe('getVersion', function () {
@@ -10,8 +17,8 @@ describe('parser', function() {
             var fs = require('fs');
 
             function afterRead(err, data) {
-                var p = JSON.parse(data);
-                var version = parser.getVersion();
+                var p = JSON.parse(data),
+                    version = parser.getVersion();
 
                 (version.moduleVersion).should.be.exactly(p.version);
                 done();
@@ -226,6 +233,7 @@ describe('parser', function() {
 
     });
 
+
     describe('parseMolHeader', function () {
         it('should interpret the header line', function () {
             var header = "\n  Mol2Comp06180618072D\n\n",
@@ -236,7 +244,193 @@ describe('parser', function() {
             (parsed.comment).should.be.exactly('');
             (parsed.initials).should.be.exactly('  ');
             (parsed.software).should.be.exactly('Mol2Comp');
-            (parsed.date).should.eql(new Date(2006,06,18,18,07));
+            dateMatch(parsed.date, new Date('2006-06-18T18:07')).should.be.ok;
         });
     });
+
+    describe('parseDataItem', function () {
+        it('should interpret a data item', function () {
+            var dataItem = '>  <ID>\n_Elements.#018',
+                parsed = parser.parseDataItem(dataItem);
+
+            (parsed.name).should.equal('ID');
+            (parsed.value).should.equal('_Elements.#018');
+        });
+        it('should interpret a data item (ID 2)', function () {
+            var dataItem = '>  <ID>\nzwitterions_2',
+                parsed = parser.parseDataItem(dataItem);
+
+            (parsed.name).should.equal('ID');
+            (parsed.value).should.equal('zwitterions_2');
+        });
+        it('should interpret a data item (PUBCHEM CID)', function () {
+            var dataItem = '> <PUBCHEM_COMPOUND_CID>\n1',
+                parsed = parser.parseDataItem(dataItem);
+
+            (parsed.name).should.equal('PUBCHEM_COMPOUND_CID');
+            (parsed.value).should.equal('1');
+        });
+        it('should interpret a multiline data item (PUBCHEM COORD TYPE)', function () {
+            var dataItem = '> <PUBCHEM_COORDINATE_TYPE>\n1\n5\n255',
+                parsed = parser.parseDataItem(dataItem);
+
+            (parsed.name).should.equal('PUBCHEM_COORDINATE_TYPE');
+            (parsed.value).should.equal('1\n5\n255');
+        });
+        it('should interpret a long data item (PUBCHEM CACTVS SUBSKEYS)', function () {
+            var dataItem = '> <PUBCHEM_CACTVS_SUBSKEYS>\nAAADceByOAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHgAAAAAACBThgAYCCAMABAAIAACQCAAAAAAAAAAAAAEIAAACABQAgAAHAAAFIAAQAAAkAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==',
+                parsed = parser.parseDataItem(dataItem);
+
+            (parsed.name).should.equal('PUBCHEM_CACTVS_SUBSKEYS');
+            (parsed.value).should.equal('AAADceByOAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHgAAAAAACBThgAYCCAMABAAIAACQCAAAAAAAAAAAAAEIAAACABQAgAAHAAAFIAAQAAAkAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==');
+        });
+    });
+
+    describe('splitDataItems', function () {
+        it('should split a string into an array of data items', function () {
+            var dataItems = '> <PUBCHEM_TOTAL_CHARGE>\n0\n\n> <PUBCHEM_HEAVY_ATOM_COUNT>\n14\n\n> <PUBCHEM_ATOM_DEF_STEREO_COUNT>\n0\n\n',
+                items = parser.splitDataItems(dataItems);
+
+            (items[0]).should.equal('> <PUBCHEM_TOTAL_CHARGE>\n0');
+        });
+    });
+
+
+    describe('parseMol', function () {
+        it('should parse a complete mol file', function (done) {
+            fs.readFile('test/fixtures/single.sdf', function (err, buf) {
+                var file = String(buf),
+                    parsed = parser.parseMol(file);
+
+                (parsed === undefined).should.be.false;
+                (parsed.header).should.have.property('name', '');
+                (parsed.header).should.have.property('software', 'Mol2Comp');
+                (parsed.countLine).should.have.property('atoms', 1);
+                (parsed.countLine).should.have.property('bonds', 0);
+                (parsed.countLine).should.have.property('version', ' V2000');
+
+                (parsed.atoms.length).should.equal(parsed.countLine.atoms);
+                (parsed.atoms[0]).should.have.property('elname', 'Mn');
+                (parsed.atoms[0]).should.have.property('x', 4.5375);
+                done();
+            });
+        });
+        it('should parse a complex mol file', function () {
+            var file = String(fs.readFileSync('test/fixtures/zwitterion.sdf')),
+                parsed = parser.parseMol(file);
+
+            (parsed === undefined).should.be.false;
+            (parsed.header).should.have.property('name', '');
+            (parsed.header).should.have.property('software', '-ClnMol-');
+            (parsed.countLine).should.have.property('atoms', 243);
+            (parsed.countLine).should.have.property('bonds', 257);
+            (parsed.countLine).should.have.property('version', ' V2000');
+
+            (parsed.atoms.length).should.equal(parsed.countLine.atoms);
+            (parsed.atoms[0]).should.have.property('elname', 'C');
+            (parsed.atoms[0]).should.have.property('x', -4.9179);
+            (parsed.atoms[242]).should.have.property('x', 7.5208);
+
+            (parsed.bonds.length).should.equal(parsed.countLine.bonds);
+            (parsed.bonds[0]).should.have.property('from', 44);
+            (parsed.bonds[0]).should.have.property('to', 47);
+            (parsed.bonds[0]).should.have.property('bondType', 1);
+            (parsed.bonds[256]).should.have.property('from', 242);
+            (parsed.bonds[256]).should.have.property('to', 243);
+            (parsed.bonds[256]).should.have.property('bondType', 2);
+
+            (parsed.properties).should.have.property('CHG');
+            (parsed.properties.CHG).should.have.property(3, -1);
+            (parsed.properties.CHG).should.have.property(220, -1);
+            (parsed.properties.CHG).should.have.property(243, -1);
+
+            (parsed.data).should.be.an.Object;
+            (parsed.data).should.have.property('ID', 'zwitterions_2');
+        });
+    });
+
+    describe('prescanMol', function () {
+        it('should prescan a complete mol file', function () {
+            var file = String(fs.readFileSync('test/fixtures/single.sdf')),
+                scan = parser.prescanMol(file);
+
+            (scan.newlines).should.be.an.Array;
+            (scan.newlines[0]).should.equal(0);
+            (scan.firstM).should.equal(135);
+            (scan.lastM).should.equal(135);
+            (scan.firstAngle).should.equal(142);
+            (scan.sectionEnd).should.equal(166);
+        });
+        it('should handle empty input', function () {
+            var scan = parser.prescanMol('');
+
+            (scan.newlines).should.be.an.Array;
+            (scan.newlines).length.should.equal(0);
+        });
+        it('should handle malformed input', function () {
+            var scan = parser.prescanMol(' ');
+
+            (scan.newlines).should.be.an.Array;
+            (scan.newlines).length.should.equal(0);
+        });
+    });
+
+    describe('makeDate', function () {
+        it('should handle dates in the 2000s', function () {
+            var d = parser.makeDate('1102130613');
+
+            dateMatch(d, new Date("2013-11-02T06:13:00")).should.be.ok;
+        });
+        it('should handle dates in the 1980s', function () {
+            var d = parser.makeDate('1102850613');
+
+            dateMatch(d, new Date("1985-11-02T06:13:00")).should.be.ok;
+        });
+    });
+
+    describe('parse-many', function () {
+        it('should be able to open a stream on the fixtures (single)', function (done) {
+            function parseAndCheck(molfile) {
+                var parsed = parser.parseMol(molfile);
+
+                (parsed.data.ID).should.not.equal(null);
+            }
+
+            var callback = sinon.spy(parseAndCheck),
+                splitter = new parser.SDFSplitter(callback);
+
+
+            splitter.on('finish', function () {
+                (callback.callCount).should.be.exactly(1);
+
+                done();
+            });
+
+            fs.createReadStream('test/fixtures/single.sdf')
+                .pipe(splitter);
+        });
+
+        it('should be able to open a stream on the fixtures (double)', function (done) {
+            function parseAndCheck(molfile) {
+                var parsed = parser.parseMol(molfile);
+
+                (parsed.data.ID).should.not.equal(null);
+            }
+
+            var callback = sinon.spy(parseAndCheck),
+                splitter = new parser.SDFSplitter(callback);
+
+
+            splitter.on('finish', function () {
+                (callback.callCount).should.be.exactly(2);
+
+                done();
+            });
+
+            fs.createReadStream('test/fixtures/double.sdf')
+                .pipe(splitter);
+        });
+    });
+
+    // TODO(SOM): tests for missing header data, missing date etc.
 });
