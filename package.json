@@ -1,6 +1,6 @@
 {
   "name": "molfile",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "Stream reader for MDL, SDF, molfile chemistry data formats",
   "main": "index.js",
   "scripts": {
