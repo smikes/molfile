@@ -31,6 +31,12 @@ describe('streaming', function () {
             fs.createReadStream('test/fixtures/double.sdf')
                 .pipe(splitter);
         });
+        it('should be able to open a stream on the DOS fixtures (double)', function (done) {
+            var splitter = spySplitter(2, done);
+
+            fs.createReadStream('test/fixtures/double-dos.sdf')
+                .pipe(splitter);
+        });
         it('should be able to open a stream on the fixtures (many)', function (done) {
             var splitter = spySplitter(55, done);
 
