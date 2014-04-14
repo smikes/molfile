@@ -4,7 +4,8 @@
   "description": "Stream reader for MDL, SDF, molfile chemistry data formats",
   "main": "index.js",
   "scripts": {
-    "test": "./node_modules/bin/mocha"
+    "test": "./node_modules/bin/mocha",
+    "prepublish": "make prepublish"
   },
   "repository": {
     "type": "git",
