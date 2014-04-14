@@ -10,7 +10,7 @@ describe('streaming-slow', function () {
                 splitter = new parser.SDFSplitter(callback);
 
             splitter.on('finish', function () {
-                (callback.callCount).should.be.exactly(2187);
+                (callback.callCount).should.be.exactly(2186);
 
                 done();
             });

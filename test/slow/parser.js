@@ -20,7 +20,7 @@ describe('parser', function() {
 
 
             splitter.on('finish', function () {
-                (callback.callCount).should.be.exactly(2187);
+                (callback.callCount).should.be.exactly(2186);
 
                 done();
             });
