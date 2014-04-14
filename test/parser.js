@@ -433,4 +433,27 @@ describe('parser', function() {
     });
 
     // TODO(SOM): tests for missing header data, missing date etc.
+
+    describe('parse DOS fixtures', function () {
+        it('should parse the two-molfile file', function (done) {
+            function parseAndCheck(molfile) {
+                var parsed = parser.parseMol(molfile);
+
+                (parsed.data.ID).should.not.equal(null);
+            }
+
+            var callback = sinon.spy(parseAndCheck),
+                splitter = new parser.SDFSplitter(callback);
+
+
+            splitter.on('finish', function () {
+                (callback.callCount).should.be.exactly(2);
+
+                done();
+            });
+
+            fs.createReadStream('test/fixtures/double-dos.sdf')
+                .pipe(splitter);
+        });
+    });
 });
