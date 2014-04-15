@@ -1,6 +1,6 @@
 {
   "options": {
-      "outdir": "doc",
+      "outdir": "gh-pages/doc",
       "extension": ".cc,.js,.h"
   }
 }
