@@ -11,7 +11,9 @@
                 "molfile": 1
             },
             "classes": {
-                "molfile": 1
+                "molfile": 1,
+                "SDFTransform": 1,
+                "SDFSplitter": 1
             },
             "fors": {},
             "namespaces": {}
@@ -22,13 +24,15 @@
             "name": "molfile",
             "submodules": {},
             "classes": {
-                "molfile": 1
+                "molfile": 1,
+                "SDFTransform": 1,
+                "SDFSplitter": 1
             },
             "fors": {},
             "namespaces": {},
             "tag": "module",
             "file": "lib\\parser.js",
-            "line": 13,
+            "line": 488,
             "description": "Parser for MDL/Symyx CTfile formats\n\nUsage:\n    var molfile = require('molfile');\n\n    var parsed = molfile.parseMol(string);"
         }
     },
@@ -46,6 +50,34 @@
             "file": "lib\\parser.js",
             "line": 13,
             "description": "Parser for MDL/Symyx CTfile formats\n\nUsage:\n    var molfile = require('molfile');\n\n    var parsed = molfile.parseMol(string);"
+        },
+        "SDFTransform": {
+            "name": "SDFTransform",
+            "shortname": "SDFTransform",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "module": "molfile",
+            "namespace": "",
+            "file": "lib\\parser.js",
+            "line": 439,
+            "description": "A Transform stream that splits an SDF file into individual MOL\nfile segments and pushes the segments to the output of the stream"
+        },
+        "SDFSplitter": {
+            "name": "SDFSplitter",
+            "shortname": "SDFSplitter",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "module": "molfile",
+            "namespace": "",
+            "file": "lib\\parser.js",
+            "line": 488,
+            "description": "A Writable stream that splits an SDF file into individual MOL file segments\nsuitable for passing to parseMol.\n\nOutput is via callback.  See SDFTransform for output via Streams API"
         }
     },
     "classitems": [
@@ -65,7 +97,7 @@
         {
             "file": "lib\\parser.js",
             "line": 38,
-            "description": "Parse the count line of a V2000 format molFile\n\nReturn value:\n{\n  'atoms': 15,\n  'bonds': 14,\n  'chiral': 1,\n  'mLines': 999,\n  'version': ' V2000'\n}\n\nNote that mLines should always be 999 for modern molfiles,\nto signal the mLines value is ignored.  M lines are read until 'M  END'.\n\nNote that version will contain leading spaces if the version string\nis shorter than the 6 bytes alloted.",
+            "description": "Parse the count line of a V2000 format molFile.  Returns an object:\n\n    {\n      'atoms': 15,\n      'bonds': 14,\n      'chiral': 1,\n      'mLines': 999,\n      'version': ' V2000'\n    }\n\nNote that mLines should always be 999 for modern molfiles,\nto signal the mLines value is ignored.  M lines are read until 'M  END'.\n\nNote that version will contain leading spaces if the version string\nis shorter than the 6 bytes alloted.",
             "itemtype": "method",
             "name": "parseCountLine",
             "params": [
@@ -80,6 +112,140 @@
                 "type": "Object"
             },
             "class": "molfile",
+            "module": "molfile"
+        },
+        {
+            "file": "lib\\parser.js",
+            "line": 82,
+            "description": "Parses an atom line.  Return value is an object:\n\n     {\n        'x': 0.0,\n        'y': 0.0,\n        'z': 0.0,\n        'elname': 'Hf'\n        'massDiff': 0,\n        'chargeCode': 0,\n        'valenceCode': 0,\n      }\n\nNote that massDiff, chargeCode and valenceCode should be ignored if there\nare isotope, charge, or radical entries in the property table which\nfollows the atom and bond tables.\n\nIt is easier to read the isotope, charge, and radical information\nfrom the properties than to interpret the codes.\n\nMass difference is an integral difference from the periodic table mass,\nand is in the range -3..4\n\nCharge code should be interpreted as follows:\n\n| Code   |  Meaning |\n|-------|---------|\n|      0 | no charge (0)|\n|      1 |       +3 |\n|      2 |       +2 |\n|      3 |       +1 |\n|      4 | doublet (radical) |\n|      5 |       -1 |\n|      6 |       -2 |\n|      7 |       -3 |\n\nValence code should be interpreted as follows:\n\n| Code   |  Meaning |\n|-------|---------|\n|      0 | default valence |\n|   1-14 | valence = code |\n|    15 |  valence = 0 |",
+            "itemtype": "method",
+            "name": "parseAtomLine",
+            "params": [
+                {
+                    "name": "line",
+                    "description": "the line to parse",
+                    "type": "String"
+                }
+            ],
+            "return": {
+                "description": "data from the line",
+                "type": "Object"
+            },
+            "class": "molfile",
+            "module": "molfile"
+        },
+        {
+            "file": "lib\\parser.js",
+            "line": 147,
+            "description": "Parses a bond line.  Return value is an object:\n\n     {\n       'from': 3,\n       'to': 4,\n       'bondType': 1\n     }\n\nbondType is a code, and should be interpreted as follows:\n\n| Code | Meaning |\n|------|---------|\n| 1 | single |\n| 2 | double |\n| 3 | triple |\n| 4 | aromatic |\n| 5 | single or double |\n| 6 | single or aromatic |\n| 7 | double or aromatic |\n| 8 | any |\n\nCodes 5-8 are can only be present when the file describes a\nsearch.  They are never present in a molecule description.",
+            "itemtype": "method",
+            "name": "parseBondLine",
+            "params": [
+                {
+                    "name": "line",
+                    "description": "the line to parse",
+                    "type": "String"
+                }
+            ],
+            "return": {
+                "description": "data from the line",
+                "type": "Object"
+            },
+            "class": "molfile",
+            "module": "molfile"
+        },
+        {
+            "file": "lib\\parser.js",
+            "line": 193,
+            "description": "Parses a property line",
+            "itemtype": "method",
+            "name": "parseProperty",
+            "params": [
+                {
+                    "name": "line",
+                    "description": "the line to parse",
+                    "type": "String"
+                }
+            ],
+            "return": {
+                "description": "data from the line",
+                "type": "Object"
+            },
+            "class": "molfile",
+            "module": "molfile"
+        },
+        {
+            "file": "lib\\parser.js",
+            "line": 275,
+            "description": "Prescan the molfile data, find the newlines and boundaries of various\nblocks.  Returns an object:\n\n    {\n      newlines: [],     // offset of each newline\n      firstM: 120,      // beginning of properties\n      lastM: 154,       // end of properties\n      firstAngle: 230,  // beginning of data\n      sectionEnd: 500   // end of data\n    }",
+            "itemtype": "method",
+            "name": "prescanMol",
+            "params": [
+                {
+                    "name": "mol",
+                    "description": "the molfile data",
+                    "type": "String"
+                }
+            ],
+            "return": {
+                "description": "object containing useful offsets",
+                "type": "Object"
+            },
+            "class": "molfile",
+            "module": "molfile"
+        },
+        {
+            "file": "lib\\parser.js",
+            "line": 383,
+            "description": "Parses a V2000 molfile record and returns an Object containing\nthe data therein.\n\n     {\n         atoms: [\n           { x: 0.0, y: 0.0, z: 0.0, elname: 'Hf' }\n           ...\n         ],\n         bonds: [\n             { 3, 4, 1 },\n             ...\n         }\n         properties: {\n             CHG: {\n                3: -1\n             }\n             ISO: {\n             }\n             RAD: {\n             }\n         }\n         data: {\n           ID: 'zwitterions_2'\n        }\n      }",
+            "itemtype": "method",
+            "name": "parseMol",
+            "params": [
+                {
+                    "name": "mol",
+                    "description": "the complete molfile, including newlines",
+                    "type": "String"
+                }
+            ],
+            "return": {
+                "description": "an object representing the contents of the molfile",
+                "type": "Object"
+            },
+            "class": "molfile",
+            "module": "molfile"
+        },
+        {
+            "file": "lib\\parser.js",
+            "line": 446,
+            "description": "Constructs a new SDFTransform",
+            "is_constructor": 1,
+            "itemtype": "method",
+            "name": "SDFTransform",
+            "return": {
+                "description": "",
+                "type": "SDFTransform"
+            },
+            "class": "SDFTransform",
+            "module": "molfile"
+        },
+        {
+            "file": "lib\\parser.js",
+            "line": 497,
+            "is_constructor": 1,
+            "itemtype": "method",
+            "name": "SDFSplitter",
+            "params": [
+                {
+                    "name": "callback",
+                    "description": "function to call with molfile data",
+                    "type": "Function"
+                }
+            ],
+            "return": {
+                "description": "a Writable stream which calls the supplied callback\n     once per molfile in the supplied SDFSplitter stream",
+                "type": "SDFSplitter"
+            },
+            "class": "SDFSplitter",
             "module": "molfile"
         }
     ],

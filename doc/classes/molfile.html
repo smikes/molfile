@@ -43,6 +43,10 @@
             
                 <li><a href="../classes/molfile.html">molfile</a></li>
             
+                <li><a href="../classes/SDFSplitter.html">SDFSplitter</a></li>
+            
+                <li><a href="../classes/SDFTransform.html">SDFTransform</a></li>
+            
             </ul>
 
             <ul id="api-modules" class="apis modules">
@@ -147,7 +151,42 @@
                             </li>
                         
                             <li class="index-item method">
+                                <a href="#method_parseAtomLine">parseAtomLine</a>
+
+                                
+                                
+                            </li>
+                        
+                            <li class="index-item method">
+                                <a href="#method_parseBondLine">parseBondLine</a>
+
+                                
+                                
+                            </li>
+                        
+                            <li class="index-item method">
                                 <a href="#method_parseCountLine">parseCountLine</a>
+
+                                
+                                
+                            </li>
+                        
+                            <li class="index-item method">
+                                <a href="#method_parseMol">parseMol</a>
+
+                                
+                                
+                            </li>
+                        
+                            <li class="index-item method">
+                                <a href="#method_parseProperty">parseProperty</a>
+
+                                
+                                
+                            </li>
+                        
+                            <li class="index-item method">
+                                <a href="#method_prescanMol">prescanMol</a>
 
                                 
                                 
@@ -242,6 +281,352 @@
 </div>
 
                 
+                    <div id="method_parseAtomLine" class="method item">
+    <h3 class="name"><code>parseAtomLine</code></h3>
+
+    
+        <div class="args">
+            <span class="paren">(</span><ul class="args-list inline commas">
+            
+                <li class="arg">
+                    
+                        <code>line</code>
+                    
+                </li>
+            
+            </ul><span class="paren">)</span>
+        </div>
+    
+
+    
+        <span class="returns-inline">
+            <span class="type">Object</span>
+        </span>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    <div class="meta">
+        
+            
+                
+                <p>
+                
+                Defined in
+                
+            
+        
+        
+        <a href="../files/lib_parser.js.html#l82"><code>lib\parser.js:82</code></a>
+        
+        </p>
+
+
+        
+
+        
+    </div>
+
+    <div class="description">
+        <p>Parses an atom line.  Return value is an object:</p>
+<pre class="code prettyprint"><code> {
+    &#39;x&#39;: 0.0,
+    &#39;y&#39;: 0.0,
+    &#39;z&#39;: 0.0,
+    &#39;elname&#39;: &#39;Hf&#39;
+    &#39;massDiff&#39;: 0,
+    &#39;chargeCode&#39;: 0,
+    &#39;valenceCode&#39;: 0,
+  }</code></pre>
+<p>Note that massDiff, chargeCode and valenceCode should be ignored if there
+are isotope, charge, or radical entries in the property table which
+follows the atom and bond tables.</p>
+<p>It is easier to read the isotope, charge, and radical information
+from the properties than to interpret the codes.</p>
+<p>Mass difference is an integral difference from the periodic table mass,
+and is in the range -3..4</p>
+<p>Charge code should be interpreted as follows:</p>
+<table>
+<thead>
+<tr>
+<th>Code</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0</td>
+<td>no charge (0)</td>
+</tr>
+<tr>
+<td>1</td>
+<td>+3</td>
+</tr>
+<tr>
+<td>2</td>
+<td>+2</td>
+</tr>
+<tr>
+<td>3</td>
+<td>+1</td>
+</tr>
+<tr>
+<td>4</td>
+<td>doublet (radical)</td>
+</tr>
+<tr>
+<td>5</td>
+<td>-1</td>
+</tr>
+<tr>
+<td>6</td>
+<td>-2</td>
+</tr>
+<tr>
+<td>7</td>
+<td>-3</td>
+</tr>
+</tbody>
+</table>
+<p>Valence code should be interpreted as follows:</p>
+<table>
+<thead>
+<tr>
+<th>Code</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0</td>
+<td>default valence</td>
+</tr>
+<tr>
+<td>1-14</td>
+<td>valence = code</td>
+</tr>
+<tr>
+<td>15</td>
+<td>valence = 0</td>
+</tr>
+</tbody>
+</table>
+
+    </div>
+
+    
+        <div class="params">
+            <h4>Parameters:</h4>
+
+            <ul class="params-list">
+            
+                <li class="param">
+                    
+                        <code class="param-name">line</code>
+                        <span class="type">String</span>
+                    
+
+                    
+
+                    <div class="param-description">
+                        <p>the line to parse</p>
+
+                    </div>
+
+                    
+                </li>
+            
+            </ul>
+        </div>
+    
+
+    
+        <div class="returns">
+            <h4>Returns:</h4>
+
+            <div class="returns-description">
+                
+                    
+                        <span class="type">Object</span>:
+                    
+                    <p>data from the line</p>
+
+                
+            </div>
+        </div>
+    
+
+    
+</div>
+
+                
+                    <div id="method_parseBondLine" class="method item">
+    <h3 class="name"><code>parseBondLine</code></h3>
+
+    
+        <div class="args">
+            <span class="paren">(</span><ul class="args-list inline commas">
+            
+                <li class="arg">
+                    
+                        <code>line</code>
+                    
+                </li>
+            
+            </ul><span class="paren">)</span>
+        </div>
+    
+
+    
+        <span class="returns-inline">
+            <span class="type">Object</span>
+        </span>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    <div class="meta">
+        
+            
+                
+                <p>
+                
+                Defined in
+                
+            
+        
+        
+        <a href="../files/lib_parser.js.html#l147"><code>lib\parser.js:147</code></a>
+        
+        </p>
+
+
+        
+
+        
+    </div>
+
+    <div class="description">
+        <p>Parses a bond line.  Return value is an object:</p>
+<pre class="code prettyprint"><code> {
+   &#39;from&#39;: 3,
+   &#39;to&#39;: 4,
+   &#39;bondType&#39;: 1
+ }</code></pre>
+<p>bondType is a code, and should be interpreted as follows:</p>
+<table>
+<thead>
+<tr>
+<th>Code</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>single</td>
+</tr>
+<tr>
+<td>2</td>
+<td>double</td>
+</tr>
+<tr>
+<td>3</td>
+<td>triple</td>
+</tr>
+<tr>
+<td>4</td>
+<td>aromatic</td>
+</tr>
+<tr>
+<td>5</td>
+<td>single or double</td>
+</tr>
+<tr>
+<td>6</td>
+<td>single or aromatic</td>
+</tr>
+<tr>
+<td>7</td>
+<td>double or aromatic</td>
+</tr>
+<tr>
+<td>8</td>
+<td>any</td>
+</tr>
+</tbody>
+</table>
+<p>Codes 5-8 are can only be present when the file describes a
+search.  They are never present in a molecule description.</p>
+
+    </div>
+
+    
+        <div class="params">
+            <h4>Parameters:</h4>
+
+            <ul class="params-list">
+            
+                <li class="param">
+                    
+                        <code class="param-name">line</code>
+                        <span class="type">String</span>
+                    
+
+                    
+
+                    <div class="param-description">
+                        <p>the line to parse</p>
+
+                    </div>
+
+                    
+                </li>
+            
+            </ul>
+        </div>
+    
+
+    
+        <div class="returns">
+            <h4>Returns:</h4>
+
+            <div class="returns-description">
+                
+                    
+                        <span class="type">Object</span>:
+                    
+                    <p>data from the line</p>
+
+                
+            </div>
+        </div>
+    
+
+    
+</div>
+
+                
                     <div id="method_parseCountLine" class="method item">
     <h3 class="name"><code>parseCountLine</code></h3>
 
@@ -299,15 +684,14 @@
     </div>
 
     <div class="description">
-        <p>Parse the count line of a V2000 format molFile</p>
-<p>Return value:
-{
+        <p>Parse the count line of a V2000 format molFile.  Returns an object:</p>
+<pre class="code prettyprint"><code>{
   &#39;atoms&#39;: 15,
   &#39;bonds&#39;: 14,
   &#39;chiral&#39;: 1,
   &#39;mLines&#39;: 999,
   &#39;version&#39;: &#39; V2000&#39;
-}</p>
+}</code></pre>
 <p>Note that mLines should always be 999 for modern molfiles,
 to signal the mLines value is ignored.  M lines are read until &#39;M  END&#39;.</p>
 <p>Note that version will contain leading spaces if the version string
@@ -351,6 +735,358 @@ is shorter than the 6 bytes alloted.</p>
                         <span class="type">Object</span>:
                     
                     <p>data from the line</p>
+
+                
+            </div>
+        </div>
+    
+
+    
+</div>
+
+                
+                    <div id="method_parseMol" class="method item">
+    <h3 class="name"><code>parseMol</code></h3>
+
+    
+        <div class="args">
+            <span class="paren">(</span><ul class="args-list inline commas">
+            
+                <li class="arg">
+                    
+                        <code>mol</code>
+                    
+                </li>
+            
+            </ul><span class="paren">)</span>
+        </div>
+    
+
+    
+        <span class="returns-inline">
+            <span class="type">Object</span>
+        </span>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    <div class="meta">
+        
+            
+                
+                <p>
+                
+                Defined in
+                
+            
+        
+        
+        <a href="../files/lib_parser.js.html#l383"><code>lib\parser.js:383</code></a>
+        
+        </p>
+
+
+        
+
+        
+    </div>
+
+    <div class="description">
+        <p>Parses a V2000 molfile record and returns an Object containing
+the data therein.</p>
+<pre class="code prettyprint"><code> {
+     atoms: [
+       { x: 0.0, y: 0.0, z: 0.0, elname: &#39;Hf&#39; }
+       ...
+     ],
+     bonds: [
+         { 3, 4, 1 },
+         ...
+     }
+     properties: {
+         CHG: {
+            3: -1
+         }
+         ISO: {
+         }
+         RAD: {
+         }
+     }
+     data: {
+       ID: &#39;zwitterions_2&#39;
+    }
+  }</code></pre>
+
+    </div>
+
+    
+        <div class="params">
+            <h4>Parameters:</h4>
+
+            <ul class="params-list">
+            
+                <li class="param">
+                    
+                        <code class="param-name">mol</code>
+                        <span class="type">String</span>
+                    
+
+                    
+
+                    <div class="param-description">
+                        <p>the complete molfile, including newlines</p>
+
+                    </div>
+
+                    
+                </li>
+            
+            </ul>
+        </div>
+    
+
+    
+        <div class="returns">
+            <h4>Returns:</h4>
+
+            <div class="returns-description">
+                
+                    
+                        <span class="type">Object</span>:
+                    
+                    <p>an object representing the contents of the molfile</p>
+
+                
+            </div>
+        </div>
+    
+
+    
+</div>
+
+                
+                    <div id="method_parseProperty" class="method item">
+    <h3 class="name"><code>parseProperty</code></h3>
+
+    
+        <div class="args">
+            <span class="paren">(</span><ul class="args-list inline commas">
+            
+                <li class="arg">
+                    
+                        <code>line</code>
+                    
+                </li>
+            
+            </ul><span class="paren">)</span>
+        </div>
+    
+
+    
+        <span class="returns-inline">
+            <span class="type">Object</span>
+        </span>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    <div class="meta">
+        
+            
+                
+                <p>
+                
+                Defined in
+                
+            
+        
+        
+        <a href="../files/lib_parser.js.html#l193"><code>lib\parser.js:193</code></a>
+        
+        </p>
+
+
+        
+
+        
+    </div>
+
+    <div class="description">
+        <p>Parses a property line</p>
+
+    </div>
+
+    
+        <div class="params">
+            <h4>Parameters:</h4>
+
+            <ul class="params-list">
+            
+                <li class="param">
+                    
+                        <code class="param-name">line</code>
+                        <span class="type">String</span>
+                    
+
+                    
+
+                    <div class="param-description">
+                        <p>the line to parse</p>
+
+                    </div>
+
+                    
+                </li>
+            
+            </ul>
+        </div>
+    
+
+    
+        <div class="returns">
+            <h4>Returns:</h4>
+
+            <div class="returns-description">
+                
+                    
+                        <span class="type">Object</span>:
+                    
+                    <p>data from the line</p>
+
+                
+            </div>
+        </div>
+    
+
+    
+</div>
+
+                
+                    <div id="method_prescanMol" class="method item">
+    <h3 class="name"><code>prescanMol</code></h3>
+
+    
+        <div class="args">
+            <span class="paren">(</span><ul class="args-list inline commas">
+            
+                <li class="arg">
+                    
+                        <code>mol</code>
+                    
+                </li>
+            
+            </ul><span class="paren">)</span>
+        </div>
+    
+
+    
+        <span class="returns-inline">
+            <span class="type">Object</span>
+        </span>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    <div class="meta">
+        
+            
+                
+                <p>
+                
+                Defined in
+                
+            
+        
+        
+        <a href="../files/lib_parser.js.html#l275"><code>lib\parser.js:275</code></a>
+        
+        </p>
+
+
+        
+
+        
+    </div>
+
+    <div class="description">
+        <p>Prescan the molfile data, find the newlines and boundaries of various
+blocks.  Returns an object:</p>
+<pre class="code prettyprint"><code>{
+  newlines: [],     // offset of each newline
+  firstM: 120,      // beginning of properties
+  lastM: 154,       // end of properties
+  firstAngle: 230,  // beginning of data
+  sectionEnd: 500   // end of data
+}</code></pre>
+
+    </div>
+
+    
+        <div class="params">
+            <h4>Parameters:</h4>
+
+            <ul class="params-list">
+            
+                <li class="param">
+                    
+                        <code class="param-name">mol</code>
+                        <span class="type">String</span>
+                    
+
+                    
+
+                    <div class="param-description">
+                        <p>the molfile data</p>
+
+                    </div>
+
+                    
+                </li>
+            
+            </ul>
+        </div>
+    
+
+    
+        <div class="returns">
+            <h4>Returns:</h4>
+
+            <div class="returns-description">
+                
+                    
+                        <span class="type">Object</span>:
+                    
+                    <p>object containing useful offsets</p>
 
                 
             </div>
