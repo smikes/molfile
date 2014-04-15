@@ -443,17 +443,19 @@ describe('parser', function() {
             }
 
             var callback = sinon.spy(parseAndCheck),
-                splitter = new parser.SDFSplitter(callback);
+                transform = new parser.SDFTransform();
 
-
-            splitter.on('finish', function () {
+            transform.on('finish', function () {
                 (callback.callCount).should.be.exactly(2);
 
                 done();
             });
+            transform.on('data', function (chunk) {
+                callback(String(chunk));
+            });
 
             fs.createReadStream('test/fixtures/double-dos.sdf')
-                .pipe(splitter);
+                .pipe(transform);
         });
     });
 });

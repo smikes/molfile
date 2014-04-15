@@ -1,7 +1,6 @@
 /*globals: it, describe*/
 require('should');
 var fs = require('fs'),
-    sinon = require('sinon'),
     parser = require('../../lib/parser');
 
 
@@ -9,18 +8,21 @@ describe('parser', function() {
     describe('parse-many', function () {
         it('should be able to open a stream on the fixtures (full)', function (done) {
 
+            var callback = parseAndCheck,
+                splitter = new parser.SDFSplitter(callback),
+                count = 0;
+
             function parseAndCheck(molfile) {
                 var parsed = parser.parseMol(molfile);
+
+                count += 1;
 
                 (parsed.data.ID).should.not.equal(null);
             }
 
-            var callback = sinon.spy(parseAndCheck),
-                splitter = new parser.SDFSplitter(callback);
-
 
             splitter.on('finish', function () {
-                (callback.callCount).should.be.exactly(2186);
+                (count).should.be.exactly(2186);
 
                 done();
             });
