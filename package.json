@@ -2,7 +2,7 @@
   "name": "molfile",
   "version": "0.0.2",
   "description": "Stream reader for MDL, SDF, molfile chemistry data formats",
-  "main": "index.js",
+  "main": "lib/parser.js",
   "scripts": {
     "test": "./node_modules/bin/mocha",
     "prepublish": "make prepublish"
@@ -33,6 +33,5 @@
     "yuidocjs": "^0.3.49"
   },
   "dependencies": {
-    "unzip": "^0.1.9"
   }
 }
