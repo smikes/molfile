@@ -1,6 +1,6 @@
 {
   "name": "molfile",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Stream reader for MDL, SDF, molfile chemistry data formats",
   "main": "lib/parser.js",
   "scripts": {
@@ -32,6 +32,5 @@
     "sinon": "^1.9.1",
     "yuidocjs": "^0.3.49"
   },
-  "dependencies": {
-  }
+  "dependencies": {}
 }
