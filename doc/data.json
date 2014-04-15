@@ -1,0 +1,87 @@
+{
+    "project": {
+        "name": "molfile",
+        "description": "Stream reader for MDL, SDF, molfile chemistry data formats",
+        "version": "0.0.2"
+    },
+    "files": {
+        "lib\\parser.js": {
+            "name": "lib\\parser.js",
+            "modules": {
+                "molfile": 1
+            },
+            "classes": {
+                "molfile": 1
+            },
+            "fors": {},
+            "namespaces": {}
+        }
+    },
+    "modules": {
+        "molfile": {
+            "name": "molfile",
+            "submodules": {},
+            "classes": {
+                "molfile": 1
+            },
+            "fors": {},
+            "namespaces": {},
+            "tag": "module",
+            "file": "lib\\parser.js",
+            "line": 13,
+            "description": "Parser for MDL/Symyx CTfile formats\n\nUsage:\n    var molfile = require('molfile');\n\n    var parsed = molfile.parseMol(string);"
+        }
+    },
+    "classes": {
+        "molfile": {
+            "name": "molfile",
+            "shortname": "molfile",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "module": "molfile",
+            "namespace": "",
+            "file": "lib\\parser.js",
+            "line": 13,
+            "description": "Parser for MDL/Symyx CTfile formats\n\nUsage:\n    var molfile = require('molfile');\n\n    var parsed = molfile.parseMol(string);"
+        }
+    },
+    "classitems": [
+        {
+            "file": "lib\\parser.js",
+            "line": 26,
+            "description": "Return parser version string.",
+            "itemtype": "method",
+            "name": "getVersion",
+            "return": {
+                "description": "parser version",
+                "type": "String"
+            },
+            "class": "molfile",
+            "module": "molfile"
+        },
+        {
+            "file": "lib\\parser.js",
+            "line": 38,
+            "description": "Parse the count line of a V2000 format molFile\n\nReturn value:\n{\n  'atoms': 15,\n  'bonds': 14,\n  'chiral': 1,\n  'mLines': 999,\n  'version': ' V2000'\n}\n\nNote that mLines should always be 999 for modern molfiles,\nto signal the mLines value is ignored.  M lines are read until 'M  END'.\n\nNote that version will contain leading spaces if the version string\nis shorter than the 6 bytes alloted.",
+            "itemtype": "method",
+            "name": "parseCountLine",
+            "params": [
+                {
+                    "name": "line",
+                    "description": "count line to parse",
+                    "type": "String"
+                }
+            ],
+            "return": {
+                "description": "data from the line",
+                "type": "Object"
+            },
+            "class": "molfile",
+            "module": "molfile"
+        }
+    ],
+    "warnings": []
+}
