@@ -11,7 +11,7 @@ prepublish: lint doc test no-dos-endings check-coverage jstest-slow
 lint: jslint doclint
 
 jslint:
-	./node_modules/.bin/jslint --terse -- $(JSSOURCES) ; echo
+	./node_modules/.bin/jslint --terse -- $(JSSOURCES)
 
 doclint:
 	./node_modules/.bin/yuidoc $(DOCDIRS) --lint
@@ -31,7 +31,7 @@ cover: $(JSSOURCES)
 	./node_modules/.bin/istanbul cover --print=both ./node_modules/mocha/bin/_mocha --
 
 check-coverage: cover
-	./node_modules/.bin/istanbul check-coverage --statements 90 --branches 90 --functions 90 --lines 90
+	./node_modules/.bin/istanbul check-coverage --statements 99 --branches 99 --functions 99 --lines 99
 
 doc:
 	./node_modules/.bin/yuidoc $(DOCDIRS)
