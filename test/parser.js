@@ -420,7 +420,6 @@ describe('parser', function() {
             var callback = sinon.spy(parseAndCheck),
                 splitter = new parser.SDFSplitter(callback);
 
-
             splitter.on('finish', function () {
                 (callback.callCount).should.be.exactly(2);
 
@@ -434,7 +433,14 @@ describe('parser', function() {
 
     // TODO(SOM): tests for missing header data, missing date etc.
 
-    describe('parse DOS fixtures', function () {
+    describe('discovered errors', function () {
+        it('should produce an empty bonds[] array when bondcount is zero', function () {
+            var mol = '\r\n  Mol2Comp06180618072D\r\n\r\n  1  0  0  0  0  0  0  0  0  0999 V2000\r\n   10.2967   -1.5283    0.0000 Ar  0  0  0  0  0  0  0  0  0  0  0  0\r\nM  END\r\n>  <ID>\r\n_Elements.#003\r\n\r\n\r\n$$$$\r\n',
+                parsed = parser.parseMol(mol);
+
+            parsed.bonds.should.eql([]);
+        });
+
         it('should parse the two-molfile file', function (done) {
             function parseAndCheck(molfile) {
                 var parsed = parser.parseMol(molfile);
@@ -457,5 +463,24 @@ describe('parser', function() {
             fs.createReadStream('test/fixtures/double-dos.sdf')
                 .pipe(transform);
         });
+
+        it('should parse the zwitterions_1.002 file', function (done) {
+            var transform = new parser.SDFTransform();
+
+            transform.on('data', function (chunk) {
+                var mol = parser.parseMol(String(chunk));
+
+                console.log(JSON.stringify(mol));
+
+                (mol.atoms.length).should.equal(4);
+                (mol.properties.CHG).should.have.property(3, 1);
+                (mol.properties.CHG).should.have.property(4, -1);
+                done();
+            });
+
+            fs.createReadStream('test/fixtures/zwitterions_1.002.sdf')
+                .pipe(transform);
+        });
+
     });
 });
