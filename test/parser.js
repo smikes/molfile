@@ -149,6 +149,20 @@ describe('parser', function() {
             (parsed.z).should.be.approximately(0.0000, 0.001);
             (parsed.elname).should.be.exactly('Uns');
         });
+
+        it('should handle uncommon fields', function () {
+            var atomLine = '    0.9125   -5.0000    0.0000 C   0  0  3  0  0  2  0  0  0  0  0  0';
+
+            var parsed = parser.parseAtomLine(atomLine);
+
+            (parsed.x).should.be.approximately(0.9125, 0.001);
+            (parsed.y).should.be.approximately(-5, 0.001);
+            (parsed.z).should.be.approximately(0.0000, 0.001);
+            (parsed.elname).should.be.exactly('C');
+            (parsed.valenceCode).should.be.exactly(2);
+        });
+
+
     });
     describe('parseBondLine', function () {
         it('should handle a simple bond line', function () {
