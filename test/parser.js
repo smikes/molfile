@@ -167,6 +167,15 @@ describe('parser', function() {
             (parsed.to).should.be.exactly(202);
             (parsed.bondType).should.be.exactly(4);
         });
+        it('should handle a chiral bond line', function () {
+            var bondLine = '  2  5  1  1  0  0  0',
+                parsed = parser.parseBondLine(bondLine);
+
+            (parsed.from).should.equal(2);
+            (parsed.to).should.equal(5);
+            (parsed.bondType).should.equal(1);
+            (parsed.bondStereo).should.equal(1);
+        });
     });
 
     describe('parseProperty', function () {
@@ -469,8 +478,6 @@ describe('parser', function() {
 
             transform.on('data', function (chunk) {
                 var mol = parser.parseMol(String(chunk));
-
-                console.log(JSON.stringify(mol));
 
                 (mol.atoms.length).should.equal(4);
                 (mol.properties.CHG).should.have.property(3, 1);
